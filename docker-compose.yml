@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    container_name: secreto_clone_server
+    restart: on-failure
+    ports:
+      - "${APP_PORT}:8000"
+    networks:
+      - secreto_clone
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:6.0.3
+    container_name: secreto_clone_db
+    restart: on-failure
+    ports:
+      - "${DB_PORT}:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    networks:
+      - secreto_clone
+    volumes:
+      - mongodb:/data/db
+
+networks:
+  secreto_clone:
+    driver: bridge
+
+volumes:
+  mongodb:
+    driver: local
